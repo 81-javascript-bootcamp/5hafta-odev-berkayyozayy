@@ -6,13 +6,18 @@ class PomodoroApp {
     this.$tableTbody = document.querySelector(tableTbodySelector);
     this.$taskForm = document.querySelector(taskFormSelector);
     this.$taskFormInput = this.$taskForm.querySelector('input');
+    this.$addBtn = this.$taskForm.querySelector('button');
   }
 
   addTask(task) {
+    this.$addBtn.textContent = 'Adding Task...';
+    this.$addBtn.disabled = true;
     addTaskToApi(task)
       .then((data) => data.json())
       .then((newTask) => {
         this.addTaskToTable(newTask);
+        this.$addBtn.textContent = 'Add Task';
+        this.$addBtn.disabled = false;
       });
   }
 
