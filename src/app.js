@@ -1,4 +1,4 @@
-import { getDataFromApi, addTaskToApi } from './data';
+import { getDataFromApi, addTaskToApi, deleteTaskFromApi } from './data';
 
 class PomodoroApp {
   constructor(options) {
@@ -21,9 +21,12 @@ class PomodoroApp {
       });
   }
 
-  addTaskToTable(task, index) {
+  addTaskToTable(task) {
     const $newTaskEl = document.createElement('tr');
-    $newTaskEl.innerHTML = `<th scope="row">${task.id}</th><td>${task.title}</td>`;
+    $newTaskEl.innerHTML = `<th scope="row">${task.id}</th><td>${task.title}<td>
+    <button id=${task.id} class='btn-delete'><i
+    class="fas fa-trash"
+  ></i></button></td>`;
     this.$tableTbody.appendChild($newTaskEl);
     this.$taskFormInput.value = '';
   }
@@ -40,6 +43,35 @@ class PomodoroApp {
     getDataFromApi().then((currentTasks) => {
       currentTasks.forEach((task, index) => {
         this.addTaskToTable(task, index + 1);
+      });
+      this.handleDeleteTask();
+    });
+  }
+
+  getDeleteButtons() {
+    return this.$tableTbody.querySelectorAll('.btn-delete');
+  }
+
+  getRows() {
+    return this.$tableTbody.querySelectorAll('tr');
+  }
+
+  handleDeleteTask() {
+    const $deleteBtn = this.getDeleteButtons();
+    // console.log($deleteBtn);
+    $deleteBtn.forEach((button) => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        // console.log(button.id);
+        deleteTaskFromApi(button.id).then((res) => {
+          if (res.status == 200) {
+            const $trs = this.getRows();
+            $trs.forEach((tr) => {
+              tr.remove();
+            });
+            this.fillTasksTable();
+          }
+        });
       });
     });
   }
