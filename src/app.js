@@ -58,11 +58,9 @@ class PomodoroApp {
 
   handleDeleteTask() {
     const $deleteBtn = this.getDeleteButtons();
-    // console.log($deleteBtn);
     $deleteBtn.forEach((button) => {
       button.addEventListener('click', (e) => {
         e.preventDefault();
-        // console.log(button.id);
         deleteTaskFromApi(button.id).then((res) => {
           if (res.status == 200) {
             const $trs = this.getRows();
